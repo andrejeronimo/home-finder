@@ -1,6 +1,9 @@
 from datetime import datetime
 
 from django.db import models
+from django.db.models.signals import post_save
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 from users.models import User
 
@@ -71,6 +74,19 @@ class Task(models.Model):
         self.save(update_fields=['timestamp'])
 
 
+@receiver(post_save, sender=Task)
+def signal_create_task(sender, instance, created, **kwargs):
+    if created:
+        from crawlers.scheduler import schedule_task
+        schedule_task(instance)
+
+
+@receiver(post_delete, sender=Task)
+def signal_delete_task(sender, instance, **kwargs):
+    from crawlers.scheduler import unschedule_task
+    unschedule_task(instance)
+
+
 class Article(models.Model):
 
     # Task
@@ -92,3 +108,20 @@ class ArticleSchema(object):
         self.image = image
         self.description = description
         self.price = price
+
+    def to_message(self):
+        message = ""
+
+        # Title
+        if self.title:
+            message += "%s\n" % self.title
+
+        # Price
+        if self.price:
+            message += "%s\n" % self.price
+
+        # Url
+        if self.url:
+            message += "%s\n" % self.url
+
+        return message
