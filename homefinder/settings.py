@@ -147,7 +147,7 @@ DJANGO_TELEGRAMBOT = {
 
     'MODE': 'WEBHOOK',
     'WEBHOOK_SITE': '167.71.75.224',
-    #'WEBHOOK_PREFIX': '/bot',
+    'WEBHOOK_PREFIX': '/bot',
     #'WEBHOOK_CERTIFICATE': 'cert.pem', # If your site use self-signed
                          #certificate, must be set with location of your public key
                          #certificate.(More info at https://core.telegram.org/bots/self-signed )
