@@ -145,7 +145,7 @@ STATIC_URL = '/static/'
 # https://github.com/JungDev/django-telegrambot
 DJANGO_TELEGRAMBOT = {
 
-    'POLLING': 'WEBHOOK',
+    'MODE': 'POLLING',
     #'WEBHOOK_SITE': '167.71.75.224',
     #'WEBHOOK_PREFIX': '/bot',
     #'WEBHOOK_CERTIFICATE': 'cert.pem', # If your site use self-signed
