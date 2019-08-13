@@ -15,7 +15,6 @@ logger = logging.getLogger(__name__)
 
 # Commands options
 CHALLENGE, CRAWLER, LINK, DELETE_TASK = range(4)
-CRAWLER_OPTIONS = list(Crawler.objects.all().values_list('name', flat=True))
 
 
 # Start command
@@ -44,7 +43,7 @@ def start(bot, update):
 
         # Ask user for the secret word
         update.message.reply_text(
-            "You know the secret word?"
+            "Secret word?"
         )
 
         return CHALLENGE
@@ -66,7 +65,7 @@ def challenge(bot, update):
         update.message.reply_text(
             "Welcome %s 😀\n"
             "I'm Homie, a bot that will help you finding your next home.\n"
-            "This what I can do for you:"
+            "This is what I can do for you:"
             % update.message.from_user.first_name
         )
 
@@ -115,7 +114,8 @@ def new(bot, update):
         return ConversationHandler.END
 
     # Ask for crawler
-    reply_keyboard = [[x] for x in CRAWLER_OPTIONS]
+    crawler_options = list(Crawler.objects.all().values_list('name', flat=True))
+    reply_keyboard = [[x] for x in crawler_options]
     update.message.reply_text(
         "Which site do you want to use?",
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True, one_time_keyboard=True)
