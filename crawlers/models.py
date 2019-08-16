@@ -55,7 +55,7 @@ class Task(models.Model):
     crawler = models.ForeignKey(Crawler, on_delete=models.CASCADE)
 
     # Search url
-    search_url = models.CharField(max_length=200, blank=False, null=False)
+    search_url = models.CharField(max_length=2000, blank=False, null=False)
 
     # Time interval in minutes (default is 30 minutes)
     time_interval = models.PositiveIntegerField(blank=False, null=False, default=30)
