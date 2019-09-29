@@ -22,7 +22,51 @@ REQUEST_HEADERS = {
 class CrawlerEngine:
 
     @classmethod
-    def crawl(cls, task, max_pages=2):
+    def test_crawl(cls, task):
+        crawler = task.crawler
+        page_url = task.search_url
+
+        # Read page html
+        page = requests.get(page_url, headers=REQUEST_HEADERS)
+
+        # Parse page
+        tree = html.fromstring(page.content)
+
+        # Find articles
+        articles = tree.xpath(crawler.articles)
+
+        if len(articles) == 0:
+            print("No articles found, check Articles XPath")
+            return
+        else:
+            art = articles[0]
+            # Parse article
+            article = cls._parse_article(art, crawler, testing=True)
+
+            if not article:
+                print("Invalid Article")
+                return
+            else:
+                print(article.__dict__)
+
+        # Read next page
+        try:
+            if crawler.next_page_url:
+                page_url = tree.xpath(crawler.next_page_url)[0]
+                if page_url.startswith("/"):
+                    page_url = crawler.url + page_url
+            else:
+                page_url = None
+        except IndexError:
+            print("Invalid Next page Url")
+            return
+
+
+        print("Crawler working correctly")
+
+
+    @classmethod
+    def crawl(cls, task, max_pages=3):
 
         new_articles = list()
 
@@ -78,7 +122,12 @@ class CrawlerEngine:
 
             # Read next page
             try:
-                page_url = tree.xpath(crawler.next_page_url)[0]
+                if crawler.next_page_url:
+                    page_url = tree.xpath(crawler.next_page_url)[0]
+                    if page_url.startswith("/"):
+                        page_url = crawler.url + page_url
+                else:
+                    page_url = None
             except IndexError:
                 page_url = None
 
@@ -87,7 +136,7 @@ class CrawlerEngine:
         return new_articles
 
     @classmethod
-    def _parse_article(cls, article_html, crawler):
+    def _parse_article(cls, article_html, crawler, testing=False):
 
         article = ArticleSchema()
 
@@ -95,12 +144,18 @@ class CrawlerEngine:
         try:
             article.id = cls._converter(article_html.xpath(crawler.article_id))
         except IndexError:
+            if testing:
+                print("Article ID not found. Check Article ID Xpath")
             return None
 
         # Url
         try:
             article.url = cls._converter(article_html.xpath(crawler.article_url))
+            if article.url.startswith("/"):
+                article.url = crawler.url + article.url
         except IndexError:
+            if testing:
+                print("Article Url not found. Check Article Url Xpath")
             return None
 
         # Title
@@ -109,6 +164,8 @@ class CrawlerEngine:
                 article.title = cls._converter(article_html.xpath(crawler.article_title))
                 article.title = cls._clean_text(article.title)
             except IndexError:
+                if testing:
+                    print("Article Title not found. Check Article Title Xpath")
                 pass
 
         # Image
@@ -116,6 +173,8 @@ class CrawlerEngine:
             try:
                 article.image = cls._converter(article_html.xpath(crawler.article_image))
             except IndexError:
+                if testing:
+                    print("Article Image not found. Check Article Image Xpath")
                 pass
 
         # Description
@@ -124,6 +183,8 @@ class CrawlerEngine:
                 article.description = cls._converter(article_html.xpath(crawler.article_description))
                 article.description = cls._clean_text(article.description)
             except IndexError:
+                if testing:
+                    print("Article Description not found. Check Article Description Xpath")
                 pass
 
         # Price
@@ -132,6 +193,8 @@ class CrawlerEngine:
                 article.price = cls._converter(article_html.xpath(crawler.article_price))
                 article.price = cls._clean_text(article.price)
             except IndexError:
+                if testing:
+                    print("Article Price not found. Check Article Price Xpath")
                 pass
 
         return article
@@ -160,6 +223,8 @@ def run_task(task_id):
 
     # Send articles to user
     bot = DjangoTelegramBot.bots[0]
+    print(bot)
 
     for article in articles:
-        bot.sendMessage(t.user.telegram_id, text=article.to_message())
+        answer = bot.sendMessage(t.user.telegram_id, text=article.to_message())
+        print(answer)

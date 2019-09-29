@@ -95,7 +95,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'homefinderdb',
         'USER': 'homefinderdbuser',
-        'PASSWORD': 'password',
+        'PASSWORD': 'homefinderpw',
         'HOST': 'localhost',
         'PORT': '',
     }
@@ -154,7 +154,7 @@ DJANGO_TELEGRAMBOT = {
     'STRICT_INIT': True,
     'BOTS': [
         {
-           'TOKEN': '907970504:AAGc14lZ_3Onqw07aD3FXbQ0DfL3QeF3zcQ',
+           'TOKEN': '825559819:AAF6Uo5SzTPjA54AaU1tl-cdwSyESteo270',
 
            #'ALLOWED_UPDATES':(Optional[list[str]]), # List the types of
                                                    #updates you want your bot to receive. For example, specify
@@ -205,8 +205,8 @@ DJANGO_TELEGRAMBOT = {
 
 
 # Celery
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_BROKER_URL = 'redis://192.168.99.100:6379'
+CELERY_RESULT_BACKEND = 'redis://192.168.99.100:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'

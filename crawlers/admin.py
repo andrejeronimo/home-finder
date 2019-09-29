@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from crawlers.models import Crawler
 from crawlers.models import Task
+from crawlers.models import Article
 
 
 class CrawlerAdmin(admin.ModelAdmin):
@@ -14,3 +15,4 @@ class TaskAdmin(admin.ModelAdmin):
 
 admin.site.register(Crawler, CrawlerAdmin)
 admin.site.register(Task, TaskAdmin)
+admin.site.register(Article)
