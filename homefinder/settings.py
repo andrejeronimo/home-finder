@@ -95,7 +95,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'homefinderdb',
         'USER': 'homefinderdbuser',
-        'PASSWORD': 'password',
+        'PASSWORD': 'homefinderdbpw',
         'HOST': 'localhost',
         'PORT': '',
     }
